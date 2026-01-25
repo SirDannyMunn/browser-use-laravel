@@ -1,0 +1,32 @@
+{
+    "name": "velocity/browser-use-laravel",
+    "description": "Laravel SDK for Browser Use Cloud API v2",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "BrowserUseLaravel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Velocity Team"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^10.0|^11.0",
+        "illuminate/http": "^10.0|^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BrowserUseLaravel\\BrowserUseServiceProvider"
+            ],
+            "aliases": {
+                "BrowserUse": "BrowserUseLaravel\\Facades\\BrowserUse"
+            }
+        }
+    },
+    "minimum-stability": "stable"
+}
