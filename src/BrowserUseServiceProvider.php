@@ -2,6 +2,7 @@
 
 namespace BrowserUseLaravel;
 
+use BrowserUseLaravel\Commands\BrowserUseCostCommand;
 use Illuminate\Support\ServiceProvider;
 
 class BrowserUseServiceProvider extends ServiceProvider
@@ -34,6 +35,12 @@ class BrowserUseServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                BrowserUseCostCommand::class,
+            ]);
+        }
+
         $this->publishes([
             __DIR__ . '/../config/browser-use.php' => config_path('browser-use.php'),
         ], 'browser-use-config');

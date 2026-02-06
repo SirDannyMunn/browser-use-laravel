@@ -58,6 +58,7 @@ class SkillsResource extends Resource
      *
      * @param string $title The title of the skill
      * @param string $description The description of the skill
+     * @param string $agentPrompt The prompt/instructions for the agent to follow
      * @param string|null $goal The goal/automation description
      * @param array|null $categories List of categories
      * @param array|null $domains List of domains
@@ -68,6 +69,7 @@ class SkillsResource extends Resource
     public function create(
         string $title,
         string $description,
+        string $agentPrompt,
         ?string $goal = null,
         ?array $categories = null,
         ?array $domains = null,
@@ -78,6 +80,7 @@ class SkillsResource extends Resource
         $data = array_filter([
             'title' => $title,
             'description' => $description,
+            'agentPrompt' => $agentPrompt,
             'goal' => $goal,
             'categories' => $categories,
             'domains' => $domains,
