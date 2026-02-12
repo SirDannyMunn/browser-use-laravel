@@ -35,6 +35,8 @@ class BrowserUseServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 BrowserUseCostCommand::class,
@@ -44,5 +46,9 @@ class BrowserUseServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/browser-use.php' => config_path('browser-use.php'),
         ], 'browser-use-config');
+
+        $this->publishes([
+            __DIR__ . '/../database/migrations' => database_path('migrations'),
+        ], 'browser-use-migrations');
     }
 }
