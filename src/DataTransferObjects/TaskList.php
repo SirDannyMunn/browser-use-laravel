@@ -16,16 +16,17 @@ class TaskList
 
     public static function fromArray(array $data): self
     {
+        $payload = is_array($data['data'] ?? null) ? $data['data'] : $data;
         $items = array_map(
             fn(array $item) => Task::fromArray($item),
-            $data['items'] ?? []
+            $payload['items'] ?? []
         );
 
         return new self(
             items: $items,
-            totalItems: (int) ($data['totalItems'] ?? 0),
-            pageNumber: (int) ($data['pageNumber'] ?? 1),
-            pageSize: (int) ($data['pageSize'] ?? 10),
+            totalItems: (int) ($payload['totalItems'] ?? 0),
+            pageNumber: (int) ($payload['pageNumber'] ?? 1),
+            pageSize: (int) ($payload['pageSize'] ?? 10),
         );
     }
 

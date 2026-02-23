@@ -20,7 +20,7 @@ return [
     | The base URL for the Browser Use Cloud API.
     |
     */
-    'base_url' => env('BROWSER_USE_BASE_URL', 'https://api.browser-use.com/api/v2'),
+    'base_url' => env('BROWSER_USE_BASE_URL', rtrim((string) env('APP_URL', 'http://localhost'), '/') . '/api/v2'),
 
     /*
     |--------------------------------------------------------------------------

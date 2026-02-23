@@ -15,13 +15,15 @@ class Session
 
     public static function fromArray(array $data): self
     {
+        $payload = is_array($data['data'] ?? null) ? $data['data'] : $data;
+
         return new self(
-            id: $data['id'] ?? '',
-            status: $data['status'] ?? '',
-            startedAt: $data['startedAt'] ?? '',
-            liveUrl: $data['liveUrl'] ?? null,
-            finishedAt: $data['finishedAt'] ?? null,
-            publicShareUrl: $data['publicShareUrl'] ?? null,
+            id: $payload['id'] ?? '',
+            status: $payload['status'] ?? '',
+            startedAt: $payload['startedAt'] ?? '',
+            liveUrl: $payload['liveUrl'] ?? null,
+            finishedAt: $payload['finishedAt'] ?? null,
+            publicShareUrl: $payload['publicShareUrl'] ?? null,
         );
     }
 

@@ -15,13 +15,15 @@ class Profile
 
     public static function fromArray(array $data): self
     {
+        $payload = is_array($data['data'] ?? null) ? $data['data'] : $data;
+
         return new self(
-            id: $data['id'] ?? '',
-            createdAt: $data['createdAt'] ?? '',
-            updatedAt: $data['updatedAt'] ?? '',
-            name: $data['name'] ?? null,
-            lastUsedAt: $data['lastUsedAt'] ?? null,
-            cookieDomains: $data['cookieDomains'] ?? [],
+            id: $payload['id'] ?? '',
+            createdAt: $payload['createdAt'] ?? '',
+            updatedAt: $payload['updatedAt'] ?? '',
+            name: $payload['name'] ?? null,
+            lastUsedAt: $payload['lastUsedAt'] ?? null,
+            cookieDomains: $payload['cookieDomains'] ?? [],
         );
     }
 

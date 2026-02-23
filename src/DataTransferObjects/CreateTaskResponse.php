@@ -11,9 +11,11 @@ class CreateTaskResponse
 
     public static function fromArray(array $data): self
     {
+        $payload = is_array($data['data'] ?? null) ? $data['data'] : $data;
+
         return new self(
-            id: $data['id'] ?? '',
-            sessionId: $data['sessionId'] ?? '',
+            id: $payload['id'] ?? '',
+            sessionId: $payload['sessionId'] ?? '',
         );
     }
 

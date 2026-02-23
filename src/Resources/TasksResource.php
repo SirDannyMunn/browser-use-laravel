@@ -52,6 +52,7 @@ class TasksResource extends Resource
      * @param int $maxSteps Maximum number of steps (1-10000, default 30)
      * @param string|null $structuredOutput Stringified JSON schema for structured output
      * @param string|null $sessionId ID of an existing session to run the task in
+     * @param string|null $profileId Optional profile ID to bind for task/session execution
      * @param array|null $metadata Up to 10 key-value metadata pairs
      * @param array|null $secrets Secrets for the task (e.g., credentials)
      * @param array|null $allowedDomains List of allowed domains
@@ -73,6 +74,7 @@ class TasksResource extends Resource
         int $maxSteps = 30,
         ?string $structuredOutput = null,
         ?string $sessionId = null,
+        ?string $profileId = null,
         ?array $metadata = null,
         ?array $secrets = null,
         ?array $allowedDomains = null,
@@ -87,6 +89,14 @@ class TasksResource extends Resource
         ?string $judgeLlm = null,
         ?array $skillIds = null,
     ): CreateTaskResponse {
+        $resolvedVision = match (true) {
+            $vision === true => true,
+            $vision === false => null,
+            is_string($vision) && strtolower(trim($vision)) === 'auto' => null,
+            is_string($vision) => filter_var($vision, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
+            default => null,
+        };
+
         $data = array_filter([
             'task' => $task,
             'llm' => $llm,
@@ -94,6 +104,7 @@ class TasksResource extends Resource
             'maxSteps' => $maxSteps,
             'structuredOutput' => $structuredOutput,
             'sessionId' => $sessionId,
+            'profileId' => $profileId,
             'metadata' => $metadata,
             'secrets' => $secrets,
             'allowedDomains' => $allowedDomains,
@@ -101,7 +112,7 @@ class TasksResource extends Resource
             'highlightElements' => $highlightElements,
             'flashMode' => $flashMode,
             'thinking' => $thinking,
-            'vision' => $vision,
+            'vision' => $resolvedVision,
             'systemPromptExtension' => $systemPromptExtension !== '' ? $systemPromptExtension : null,
             'judge' => $judge,
             'judgeGroundTruth' => $judgeGroundTruth,

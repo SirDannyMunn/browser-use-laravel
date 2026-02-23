@@ -23,21 +23,24 @@ class Task
 
     public static function fromArray(array $data): self
     {
+        $payload = is_array($data['data'] ?? null) ? $data['data'] : $data;
+        $error = is_array($payload['error'] ?? null) ? $payload['error'] : null;
+
         return new self(
-            id: $data['id'] ?? '',
-            sessionId: $data['sessionId'] ?? '',
-            llm: $data['llm'] ?? null,
-            task: $data['task'] ?? '',
-            status: $data['status'] ?? '',
-            createdAt: $data['createdAt'] ?? '',
-            startedAt: $data['startedAt'] ?? null,
-            finishedAt: $data['finishedAt'] ?? null,
-            metadata: $data['metadata'] ?? null,
-            output: $data['output'] ?? null,
-            browserUseVersion: $data['browserUseVersion'] ?? null,
-            isSuccess: $data['isSuccess'] ?? null,
-            judgement: $data['judgement'] ?? null,
-            judgeVerdict: $data['judgeVerdict'] ?? null,
+            id: $payload['id'] ?? '',
+            sessionId: $payload['sessionId'] ?? '',
+            llm: $payload['llm'] ?? null,
+            task: $payload['task'] ?? '',
+            status: $payload['status'] ?? '',
+            createdAt: $payload['createdAt'] ?? '',
+            startedAt: $payload['startedAt'] ?? null,
+            finishedAt: $payload['finishedAt'] ?? null,
+            metadata: $payload['metadata'] ?? null,
+            output: $payload['output'] ?? $payload['outputText'] ?? ($error['message'] ?? null),
+            browserUseVersion: $payload['browserUseVersion'] ?? null,
+            isSuccess: $payload['isSuccess'] ?? null,
+            judgement: $payload['judgement'] ?? null,
+            judgeVerdict: $payload['judgeVerdict'] ?? null,
         );
     }
 
@@ -68,6 +71,6 @@ class Task
 
     public function isCompleted(): bool
     {
-        return in_array($this->status, ['finished', 'stopped']);
+        return in_array($this->status, ['finished', 'stopped', 'cancelled', 'failed', 'blocked'], true);
     }
 }
