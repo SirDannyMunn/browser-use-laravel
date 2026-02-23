@@ -5,6 +5,7 @@ namespace BrowserUseLaravel\Resources;
 use BrowserUseLaravel\DataTransferObjects\Task;
 use BrowserUseLaravel\DataTransferObjects\TaskList;
 use BrowserUseLaravel\DataTransferObjects\CreateTaskResponse;
+use BrowserUseLaravel\DataTransferObjects\BulkTaskCreateResponse;
 
 class TasksResource extends Resource
 {
@@ -125,6 +126,45 @@ class TasksResource extends Resource
 
         $response = $this->http->post('/tasks', $data);
         return CreateTaskResponse::fromArray($response);
+    }
+
+    /**
+     * Create multiple tasks in a single request.
+     *
+     * POST /tasks/bulk
+     *
+     * @param string|null $sessionId Existing session ID to reuse across all tasks
+     * @param array<int, array<string,mixed>> $tasks Task payloads
+     * @param string|null $webhookUrl Completion webhook URL
+     * @param string|null $webhookAuthToken Bearer token used by the task completion webhook sender
+     */
+    public function bulkCreate(
+        ?string $sessionId,
+        array $tasks,
+        ?string $webhookUrl = null,
+        ?string $webhookAuthToken = null,
+    ): BulkTaskCreateResponse {
+        $payload = [
+            'tasks' => array_values($tasks),
+        ];
+
+        if (is_string($sessionId) && trim($sessionId) !== '') {
+            $payload['sessionId'] = trim($sessionId);
+        }
+
+        if (is_string($webhookUrl) && trim($webhookUrl) !== '') {
+            $payload['webhook'] = [
+                'url' => trim($webhookUrl),
+            ];
+
+            if (is_string($webhookAuthToken) && trim($webhookAuthToken) !== '') {
+                $payload['webhook']['authToken'] = trim($webhookAuthToken);
+            }
+        }
+
+        $response = $this->http->post('/tasks/bulk', $payload);
+
+        return BulkTaskCreateResponse::fromArray($response);
     }
 
     /**

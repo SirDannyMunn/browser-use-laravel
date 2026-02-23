@@ -158,6 +158,17 @@ $task = BrowserUse::tasks()->stopWithSession('task-uuid');
 
 // Get task logs
 $logs = BrowserUse::tasks()->getLogs('task-uuid');
+
+// Bulk create tasks (shared session + completion webhook)
+$bulk = BrowserUse::tasks()->bulkCreate(
+    sessionId: 'session-uuid',
+    tasks: [
+        ['task' => 'Open linkedin.com/in/alice and send connection request', 'order' => 1],
+        ['task' => 'Open linkedin.com/in/bob and send connection request', 'order' => 2],
+    ],
+    webhookUrl: 'https://velocity.dev/api/v1/lead-outreach/webhooks/phantombrowse-task-complete',
+    webhookAuthToken: 'webhook-shared-secret',
+);
 ```
 
 ### Sessions
