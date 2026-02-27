@@ -3,6 +3,7 @@
 namespace BrowserUseLaravel;
 
 use BrowserUseLaravel\Resources\BillingResource;
+use BrowserUseLaravel\Resources\AccountsResource;
 use BrowserUseLaravel\Resources\SecretsResource;
 use BrowserUseLaravel\Resources\TasksResource;
 use BrowserUseLaravel\Resources\SessionsResource;
@@ -53,6 +54,14 @@ class BrowserUseClient
     public function secrets(): SecretsResource
     {
         return new SecretsResource($this->http);
+    }
+
+    /**
+     * Get the accounts resource.
+     */
+    public function accounts(): AccountsResource
+    {
+        return new AccountsResource($this->http);
     }
 
     /**
