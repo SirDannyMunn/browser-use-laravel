@@ -67,6 +67,7 @@ class TasksResource extends Resource
      * @param string|null $judgeGroundTruth Ground truth for judging
      * @param string|null $judgeLlm LLM model to use for judging
      * @param array|null $skillIds List of skill IDs to enable (use ['*'] for all)
+     * @param array|null $auth Structured auth contract (accounts + enforcement)
      */
     public function create(
         string $task,
@@ -89,6 +90,7 @@ class TasksResource extends Resource
         ?string $judgeGroundTruth = null,
         ?string $judgeLlm = null,
         ?array $skillIds = null,
+        ?array $auth = null,
     ): CreateTaskResponse {
         $resolvedVision = match (true) {
             $vision === true => true,
@@ -119,6 +121,7 @@ class TasksResource extends Resource
             'judgeGroundTruth' => $judgeGroundTruth,
             'judgeLlm' => $judgeLlm,
             'skillIds' => $skillIds,
+            'auth' => $auth,
         ], fn($v) => $v !== null && $v !== false);
 
         // Ensure required field is present
@@ -137,16 +140,21 @@ class TasksResource extends Resource
      * @param array<int, array<string,mixed>> $tasks Task payloads
      * @param string|null $webhookUrl Completion webhook URL
      * @param string|null $webhookAuthToken Bearer token used by the task completion webhook sender
+     * @param array<string,mixed>|null $auth Shared auth contract applied server-side when task payload omits auth
      */
     public function bulkCreate(
         ?string $sessionId,
         array $tasks,
         ?string $webhookUrl = null,
         ?string $webhookAuthToken = null,
+        ?array $auth = null,
     ): BulkTaskCreateResponse {
         $payload = [
             'tasks' => array_values($tasks),
         ];
+        if (is_array($auth) && $auth !== []) {
+            $payload['auth'] = $auth;
+        }
 
         if (is_string($sessionId) && trim($sessionId) !== '') {
             $payload['sessionId'] = trim($sessionId);
