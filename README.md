@@ -145,6 +145,15 @@ $task = BrowserUse::tasks()->create(
     vision: true,
     judge: true,
     skillIds: ['*'], // Enable all skills
+    auth: [
+        'accounts' => [[
+            'provider' => 'linkedin',
+            'accountKey' => 'linkedin-account-uuid',
+            'requireTotp' => true,
+            'minValiditySeconds' => 15,
+        ]],
+        'enforce' => true,
+    ],
 );
 
 // Get task details
@@ -168,6 +177,14 @@ $bulk = BrowserUse::tasks()->bulkCreate(
     ],
     webhookUrl: 'https://velocity.dev/api/v1/lead-outreach/webhooks/phantombrowse-task-complete',
     webhookAuthToken: 'webhook-shared-secret',
+    auth: [
+        'accounts' => [[
+            'provider' => 'linkedin',
+            'accountKey' => 'linkedin-account-uuid',
+            'requireTotp' => true,
+        ]],
+        'enforce' => true,
+    ],
 );
 ```
 

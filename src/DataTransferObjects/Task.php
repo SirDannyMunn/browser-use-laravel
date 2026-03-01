@@ -71,6 +71,6 @@ class Task
 
     public function isCompleted(): bool
     {
-        return in_array($this->status, ['finished', 'stopped', 'cancelled', 'failed', 'blocked'], true);
+        return in_array($this->status, ['finished', 'stopped', 'cancelled', 'failed', 'blocked', 'succeeded'], true);
     }
 }
