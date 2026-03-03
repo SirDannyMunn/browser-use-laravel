@@ -19,6 +19,8 @@ class Task
         public readonly ?bool $isSuccess,
         public readonly ?string $judgement,
         public readonly ?bool $judgeVerdict,
+        /** @var array<int,array<string,mixed>> */
+        public readonly array $outputFiles = [],
     ) {}
 
     public static function fromArray(array $data): self
@@ -41,6 +43,9 @@ class Task
             isSuccess: $payload['isSuccess'] ?? null,
             judgement: $payload['judgement'] ?? null,
             judgeVerdict: $payload['judgeVerdict'] ?? null,
+            outputFiles: is_array($payload['outputFiles'] ?? null)
+                ? $payload['outputFiles']
+                : (is_array($payload['output_files'] ?? null) ? $payload['output_files'] : []),
         );
     }
 
@@ -61,6 +66,7 @@ class Task
             'isSuccess' => $this->isSuccess,
             'judgement' => $this->judgement,
             'judgeVerdict' => $this->judgeVerdict,
+            'outputFiles' => $this->outputFiles,
         ];
     }
 

@@ -148,6 +148,9 @@ class TasksResource extends Resource
         ?string $webhookUrl = null,
         ?string $webhookAuthToken = null,
         ?array $auth = null,
+        ?int $timeoutSeconds = null,
+        ?int $pollSeconds = null,
+        ?bool $finishRunWhenComplete = null,
     ): BulkTaskCreateResponse {
         $payload = [
             'tasks' => array_values($tasks),
@@ -168,6 +171,18 @@ class TasksResource extends Resource
             if (is_string($webhookAuthToken) && trim($webhookAuthToken) !== '') {
                 $payload['webhook']['authToken'] = trim($webhookAuthToken);
             }
+        }
+
+        if (is_int($timeoutSeconds) && $timeoutSeconds > 0) {
+            $payload['timeoutSeconds'] = $timeoutSeconds;
+        }
+
+        if (is_int($pollSeconds) && $pollSeconds > 0) {
+            $payload['pollSeconds'] = $pollSeconds;
+        }
+
+        if ($finishRunWhenComplete !== null) {
+            $payload['finishRunWhenComplete'] = (bool) $finishRunWhenComplete;
         }
 
         $response = $this->http->post('/tasks/bulk', $payload);
