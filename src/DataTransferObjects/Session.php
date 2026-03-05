@@ -41,7 +41,7 @@ class Session
 
     public function isActive(): bool
     {
-        return $this->status === 'active';
+        return in_array($this->status, ['active', 'ready'], true);
     }
 
     public function isStopped(): bool
