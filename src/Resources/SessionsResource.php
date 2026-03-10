@@ -107,6 +107,19 @@ class SessionsResource extends Resource
     }
 
     /**
+     * Finish a session explicitly.
+     *
+     * POST /sessions/{session_id}/finish
+     *
+     * @param string $sessionId The session ID (UUID)
+     */
+    public function finish(string $sessionId): Session
+    {
+        $response = $this->http->post("/sessions/{$sessionId}/finish");
+        return Session::fromArray($response);
+    }
+
+    /**
      * Get public share info for a session.
      *
      * GET /sessions/{session_id}/public-share
