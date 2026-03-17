@@ -22,6 +22,9 @@ class BrowserUseClient
         int $timeout = 30,
         int $retryTimes = 3,
         int $retrySleep = 1000,
+        mixed $tlsVerify = null,
+        ?string $caBundle = null,
+        ?string $environment = null,
     ) {
         $this->http = new HttpClient(
             apiKey: $apiKey,
@@ -29,6 +32,9 @@ class BrowserUseClient
             timeout: $timeout,
             retryTimes: $retryTimes,
             retrySleep: $retrySleep,
+            tlsVerify: $tlsVerify,
+            caBundle: $caBundle,
+            environment: $environment,
         );
     }
 

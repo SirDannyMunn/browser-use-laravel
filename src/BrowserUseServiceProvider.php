@@ -3,6 +3,7 @@
 namespace BrowserUseLaravel;
 
 use BrowserUseLaravel\Commands\BrowserUseCostCommand;
+use BrowserUseLaravel\Support\BrowserUseBaseUrl;
 use Illuminate\Support\ServiceProvider;
 
 class BrowserUseServiceProvider extends ServiceProvider
@@ -17,6 +18,13 @@ class BrowserUseServiceProvider extends ServiceProvider
             'browser-use'
         );
 
+        config([
+            'browser-use.base_url' => BrowserUseBaseUrl::normalize(
+                (string) config('browser-use.base_url'),
+                (string) config('app.url')
+            ),
+        ]);
+
         $this->app->singleton(BrowserUseClient::class, function ($app) {
             return new BrowserUseClient(
                 apiKey: config('browser-use.api_key'),
@@ -24,6 +32,9 @@ class BrowserUseServiceProvider extends ServiceProvider
                 timeout: config('browser-use.timeout'),
                 retryTimes: config('browser-use.retry.times'),
                 retrySleep: config('browser-use.retry.sleep'),
+                tlsVerify: config('browser-use.tls_verify'),
+                caBundle: config('browser-use.ca_bundle'),
+                environment: $app->environment(),
             );
         });
 

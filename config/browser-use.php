@@ -44,4 +44,8 @@ return [
         'times' => env('BROWSER_USE_RETRY_TIMES', 3),
         'sleep' => env('BROWSER_USE_RETRY_SLEEP', 1000), // milliseconds
     ],
+
+    'tls_verify' => env('BROWSER_USE_TLS_VERIFY'),
+
+    'ca_bundle' => env('BROWSER_USE_CA_BUNDLE'),
 ];

@@ -5,6 +5,7 @@ namespace BrowserUseLaravel;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use BrowserUseLaravel\Support\BrowserUseTlsSettings;
 use BrowserUseLaravel\Exceptions\BrowserUseException;
 use BrowserUseLaravel\Exceptions\NotFoundException;
 use BrowserUseLaravel\Exceptions\ValidationException;
@@ -19,6 +20,9 @@ class HttpClient
     protected int $timeout;
     protected int $retryTimes;
     protected int $retrySleep;
+    protected mixed $tlsVerify;
+    protected ?string $caBundle;
+    protected ?string $environment;
 
     public function __construct(
         string $apiKey,
@@ -26,12 +30,18 @@ class HttpClient
         int $timeout = 30,
         int $retryTimes = 3,
         int $retrySleep = 1000,
+        mixed $tlsVerify = null,
+        ?string $caBundle = null,
+        ?string $environment = null,
     ) {
         $this->apiKey = $apiKey;
         $this->baseUrl = rtrim($baseUrl, '/');
         $this->timeout = $timeout;
         $this->retryTimes = $retryTimes;
         $this->retrySleep = $retrySleep;
+        $this->tlsVerify = $tlsVerify;
+        $this->caBundle = $caBundle;
+        $this->environment = $environment;
     }
 
     /**
@@ -39,7 +49,7 @@ class HttpClient
      */
     protected function request(): PendingRequest
     {
-        return Http::baseUrl($this->baseUrl)
+        $request = Http::baseUrl($this->baseUrl)
             ->timeout($this->timeout)
             ->withHeaders([
                 'X-Browser-Use-API-Key' => $this->apiKey,
@@ -50,6 +60,23 @@ class HttpClient
                 return $e instanceof \Illuminate\Http\Client\ConnectionException
                     || ($e instanceof \Illuminate\Http\Client\RequestException && $e->response->serverError());
             });
+
+        $verifyOption = BrowserUseTlsSettings::resolveVerifyOption(
+            baseUrl: $this->baseUrl,
+            verifySetting: $this->tlsVerify,
+            caBundle: $this->caBundle,
+            environment: $this->environment,
+        );
+
+        if ($verifyOption === false) {
+            return $request->withoutVerifying();
+        }
+
+        if (is_string($verifyOption) && $verifyOption !== '') {
+            return $request->withOptions(['verify' => $verifyOption]);
+        }
+
+        return $request;
     }
 
     /**
